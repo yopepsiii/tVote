@@ -10,7 +10,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'Users'
 
-    uuid: Mapped[uuid.UUID] = mapped_column(types.Uuid, server_default=text("gen_random_uuid()"), primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(types.Uuid, server_default=text("gen_random_uuid()"), primary_key=True)
 
     firstname: Mapped[str] = mapped_column(nullable=False)
     surname: Mapped[str] = mapped_column(nullable=False)
@@ -23,7 +23,9 @@ class User(Base):
 
 
 class Vote(Base):
-    user_uuid: Mapped[uuid.UUID] = mapped_column(ForeignKey('Users.uuid', ondelete="CASCADE"), primary_key=True)
+    __tablename__ = 'Votes'
+
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('Users.id', ondelete="CASCADE"), primary_key=True)
     user: Mapped['User'] = relationship(back_populates='votes', single_parent=True)
 
     candidate_id: Mapped[int] = mapped_column(ForeignKey('Candidates.id', ondelete="CASCADE"), primary_key=True)
@@ -63,5 +65,4 @@ class Candidate(Base):
 class Admin(Base):
     __tablename__ = "Admins"
 
-    user_uuid: Mapped[uuid.UUID] = mapped_column(ForeignKey("Users.uuid", ondelete="CASCADE"), primary_key=True)
-    firstname: Mapped[str] = mapped_column(ForeignKey("Users.firstname", ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("Users.id", ondelete="CASCADE"), primary_key=True)

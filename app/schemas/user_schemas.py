@@ -1,8 +1,9 @@
+import uuid
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
-from schemas import vote_schemas
+from app.schemas import vote_schemas
 
 
 class UserBase(BaseModel):
@@ -11,11 +12,16 @@ class UserBase(BaseModel):
 
 
 class UserOut(UserBase):
+    id: uuid.UUID
     votes: list[vote_schemas.VoteUserOut]
+
+    class Config:
+        from_attributes = True
 
 
 class UserCreate(UserBase):
     email: EmailStr
+    password: str
 
 
 class UserUpdate(BaseModel):

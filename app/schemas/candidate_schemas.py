@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 
 class CandidateBase(BaseModel):
@@ -14,6 +14,7 @@ class CandidateBase(BaseModel):
 
 
 class CandidateOut(CandidateBase):
+    id: int
     likes_count: int
     dislikes_count: int
 
@@ -30,5 +31,3 @@ class CandidateUpdate(BaseModel):
     faculty: Optional[str] = None
     study_dirrection: Optional[str] = None
     photo: Optional[str] = None
-
-    email: Optional[EmailStr] = None

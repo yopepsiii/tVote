@@ -16,7 +16,9 @@ from redis.asyncio.connection import ConnectionPool
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
-app = FastAPI(openapi_prefix="/api/v1")
+from .routers import auth, candidates, users, votes
+
+app = FastAPI(root_path="/api/v1")
 app.add_middleware(middleware_class=SessionMiddleware, secret_key=settings.google_client_secret)
 
 app.add_middleware(
@@ -27,7 +29,10 @@ app.add_middleware(
     allow_headers=["*"],  # Какие headers разрешены для обработки
 )
 
-
+app.include_router(auth.router)
+app.include_router(candidates.router)
+app.include_router(users.router)
+app.include_router(votes.router)
 @app.get('/')
 async def index():
     return {'message': 'yo tVote\'s API'}

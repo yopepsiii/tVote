@@ -7,8 +7,11 @@ class VoteBase(BaseModel):
     candidate_id: int
     type: conint(le=1)
 
+    class Config:
+        from_attributes = True
 
-class VoteUserOut(BaseModel):
+
+class VoteUserOut(VoteBase):
     pass
 
 

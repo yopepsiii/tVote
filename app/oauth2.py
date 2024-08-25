@@ -1,5 +1,6 @@
 import uuid
 
+from authlib.integrations.starlette_client import OAuth
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
@@ -8,13 +9,25 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from starlette import status
 
-import models
-from database import get_db
-from schemas import auth_schemas
+import app.models as models
+from .database import get_db
+from .schemas import auth_schemas
 
-from config import settings
+from .config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+oauth2_scheme_google = OAuth2PasswordBearer(tokenUrl='login/google/callback')
+
+oauth_client = OAuth()
+oauth_client.register(
+    name="google",
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_id=settings.google_client_id,
+    client_secret=settings.google_client_secret,
+    client_kwargs={
+        'scope': 'openid profile email'
+    }
+)
 
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
@@ -39,11 +52,11 @@ async def verify_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
-        user_uuid, email = payload.get("user_uuid"), payload.get("email")
+        user_id, email = payload.get("user_id"), payload.get("email")
 
-        if user_uuid is None or email is None:
+        if user_id is None or email is None:
             raise credentials_exception
-        token_data = auth_schemas.TokenData(uuid=uuid.UUID(user_uuid), email=email)
+        token_data = auth_schemas.TokenData(id=uuid.UUID(user_id), email=email)
     except JWTError as e:
         raise credentials_exception from e
 
@@ -60,7 +73,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 async def is_current_user_admin(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    admin = db.query(models.Admin).filter(models.Admin.user_uuid == current_user.uuid).first()
+    admin = db.query(models.Admin).filter(models.Admin.user_id == current_user.id).first()
     if admin is None and current_user.email != settings.owner_email:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="У вас нет прав для этого действия.")
 

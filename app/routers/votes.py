@@ -3,10 +3,10 @@ from fastapi_cache import FastAPICache
 from sqlalchemy.orm import Session
 from starlette import status
 
-import models
-from database import get_db
-from oauth2 import get_current_user
-from schemas import vote_schemas
+from app import models
+from app.database import get_db
+from app.oauth2 import get_current_user
+from app.schemas import vote_schemas
 
 router = APIRouter(prefix="/votes", tags=["Оценка кандидата (За/Против)"])
 
@@ -19,12 +19,12 @@ async def create_vote(vote: vote_schemas.VoteCreate, current_user: models.User =
     if candidate is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Кандидат с ID {id} не найден.")
 
-    vote_query = db.query(models.Vote).filter(models.Vote.user_uuid == current_user.uuid,
+    vote_query = db.query(models.Vote).filter(models.Vote.user_id == current_user.id,
                                               models.Vote.candidate_id == vote.candidate_id)
     founded_vote = vote_query.first()
 
     if founded_vote is None:
-        new_vote = models.Vote(user_guid=current_user.uuid, **vote.dict())
+        new_vote = models.Vote(user_id=current_user.id, **vote.dict())
         db.add(new_vote)
         db.commit()
         db.refresh(new_vote)

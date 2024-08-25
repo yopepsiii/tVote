@@ -10,7 +10,7 @@
   <component name="PyNamespacePackagesService">
     <option name="namespacePackageFolders">
       <list>
-        <option value="$MODULE_DIR$/routers" />
+        <option value="$MODULE_DIR$/app/routers" />
       </list>
     </option>
   </component>
