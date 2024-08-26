@@ -26,7 +26,7 @@ async def get_user(current_user: models.User = Depends(get_current_user), db: Se
 
 
 @router.get('/', response_model=List[user_schemas.UserOut])
-@cache(namespace='users')
+@cache(namespace='users', expire=600)
 async def get_users(current_user_admin=Depends(is_current_user_admin), db: Session = Depends(get_db)):
     users = db.query(models.User).all()
     return await validate_list(values=users, class_type=user_schemas.UserOut)
