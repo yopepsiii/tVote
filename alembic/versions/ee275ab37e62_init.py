@@ -43,7 +43,6 @@ def upgrade() -> None:
     )
     op.create_table('Admins',
     sa.Column('user_id', sa.Uuid(), nullable=False),
-    sa.Column('firstname', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['Users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('user_id')
     )

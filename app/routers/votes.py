@@ -17,7 +17,7 @@ async def create_vote(vote: vote_schemas.VoteCreate, current_user: models.User =
 
     candidate = db.query(models.Candidate).filter(models.Candidate.id == vote.candidate_id).first()
     if candidate is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Кандидат с ID {id} не найден.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Кандидат с ID {vote.candidate_id} не найден.")
 
     vote_query = db.query(models.Vote).filter(models.Vote.user_id == current_user.id,
                                               models.Vote.candidate_id == vote.candidate_id)

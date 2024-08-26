@@ -13,6 +13,7 @@ class UserBase(BaseModel):
 
 class UserOut(UserBase):
     id: uuid.UUID
+    email: EmailStr
     votes: list[vote_schemas.VoteUserOut]
 
     class Config:
@@ -29,3 +30,15 @@ class UserUpdate(BaseModel):
     surname: Optional[str] = None
     email: Optional[EmailStr] = None
     password: Optional[str] = None
+
+
+class UserAdmin(UserBase):
+    id: uuid.UUID
+
+    class Config:
+        from_attributes = True
+
+
+class UserAdminSearch(UserBase):
+    id: uuid.UUID
+    email: EmailStr

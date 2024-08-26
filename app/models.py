@@ -66,3 +66,4 @@ class Admin(Base):
     __tablename__ = "Admins"
 
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("Users.id", ondelete="CASCADE"), primary_key=True)
+    user: Mapped['User'] = relationship(foreign_keys=user_id)

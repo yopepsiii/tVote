@@ -78,3 +78,11 @@ async def is_current_user_admin(current_user: models.User = Depends(get_current_
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="У вас нет прав для этого действия.")
 
     return current_user
+
+
+async def is_current_user_owner(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    owner = db.query(models.User).filter(models.User.id == current_user.id, models.User.email == settings.owner_email).first()
+    if owner is None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="У вас нет прав для этого действия.")
+
+    return current_user
