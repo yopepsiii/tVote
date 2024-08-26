@@ -16,7 +16,6 @@ from .schemas import auth_schemas
 from .config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
-oauth2_scheme_google = OAuth2PasswordBearer(tokenUrl='login/google/callback')
 
 oauth_client = OAuth()
 oauth_client.register(
