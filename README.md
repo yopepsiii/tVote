@@ -1,4 +1,4 @@
-![tVote-logo](https://i.imgur.com/sXmAHCS.png)
+![tVote-logo](https://i.imgur.com/PGoAPme.png)
 ## Какой стек?
 FastAPI + PostgreSQL + Redis
 
