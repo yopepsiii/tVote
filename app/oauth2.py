@@ -65,7 +65,7 @@ async def verify_token(token: str, credentials_exception):
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Не получилось подтвердить данные.",
         headers={"WWW-Authenticate": "Bearer"},
     )  # Создаем описание ошибки для неправильного токена
     return await verify_token(token, credentials_exception)

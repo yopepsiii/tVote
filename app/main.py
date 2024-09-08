@@ -64,7 +64,7 @@ def api_key_builder(
     arguments['url'] = request.url
     # print("arguments:", arguments)
 
-    prefix = f"{FastAPICache.get_prefix()}:{namespace}:"
+    prefix = f"{namespace}:"
     cache_key = (
             prefix
             + hashlib.md5(  # nosec:B303
