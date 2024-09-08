@@ -31,7 +31,7 @@ async def create_admin(new_admin_data: admin_schemas.AdminCreate, db: Session = 
     db.commit()
     db.refresh(new_admin)
 
-    return {"message": f"Добавлен новый администратор."}
+    return new_admin
 
 
 @router.delete('/{user_id}', status_code=status.HTTP_204_NO_CONTENT)

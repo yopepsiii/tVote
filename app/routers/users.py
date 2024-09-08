@@ -43,17 +43,17 @@ async def search_users(query: Optional[str], current_user_admin=Depends(is_curre
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_user(new_data: user_schemas.UserCreate,
-                      db: Session = Depends(get_db)):
+                      db: Session = Depends(get_db), current_user_admin = Depends(oauth2.is_current_user_admin)):
     new_data.password = utils.hash(new_data.password)
     new_user = models.User(**new_data.dict())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    new_user.password = new_data.password
 
     await FastAPICache.clear(namespace='users')
 
-    access_token = await oauth2.create_access_token(data={"user_id": str(new_user.id), "email": new_user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return new_user
 
 
 @router.patch('/{id}', response_model=user_schemas.UserOut)

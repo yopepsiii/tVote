@@ -21,7 +21,6 @@ async def login(
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         db: Session = Depends(get_db),
 ):
-    print(form_data.password)
     user = db.query(models.User).filter(models.User.email == form_data.username).first()  # type: ignore
     if user is None:
         raise HTTPException(
