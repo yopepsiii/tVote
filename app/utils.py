@@ -24,5 +24,5 @@ async def validate(value, class_type):
 
 async def generate_secure_password(length=30):
     characters = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(secrets.choice(characters) for i in range(length))
+    password = "".join(secrets.choice(characters) for i in range(length))
     return password

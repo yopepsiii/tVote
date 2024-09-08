@@ -15,17 +15,23 @@ from app.oauth2 import is_current_user_admin
 router = APIRouter(prefix="/candidates", tags=["Кандидаты"])
 
 
-@router.get('/', response_model=List[candidate_schemas.CandidateOut])
+@router.get("/", response_model=List[candidate_schemas.CandidateOut])
 @cache(namespace="candidates")
 async def get_candidates(db: Session = Depends(get_db)):
     candidates = db.query(models.Candidate).all()
     return candidates
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, response_model=candidate_schemas.CandidateOut)
-async def create_candidate(candidate: candidate_schemas.CandidateCreate,
-                           current_user_admin=Depends(is_current_user_admin),
-                           db: Session = Depends(get_db)):
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    response_model=candidate_schemas.CandidateOut,
+)
+async def create_candidate(
+    candidate: candidate_schemas.CandidateCreate,
+    current_user_admin=Depends(is_current_user_admin),
+    db: Session = Depends(get_db),
+):
     new_candidate = models.Candidate(**candidate.dict())
     db.add(new_candidate)
     db.commit()
@@ -37,15 +43,21 @@ async def create_candidate(candidate: candidate_schemas.CandidateCreate,
     return new_candidate
 
 
-@router.patch('/{id}', response_model=candidate_schemas.CandidateOut)
-async def update_candidate(id: int, new_data: candidate_schemas.CandidateUpdate,
-                           current_user_admin=Depends(is_current_user_admin),
-                           db: Session = Depends(get_db)):
+@router.patch("/{id}", response_model=candidate_schemas.CandidateOut)
+async def update_candidate(
+    id: int,
+    new_data: candidate_schemas.CandidateUpdate,
+    current_user_admin=Depends(is_current_user_admin),
+    db: Session = Depends(get_db),
+):
     candidate_query = db.query(models.Candidate).filter(models.Candidate.id == id)
     candidate = candidate_query.first()
 
     if candidate is None:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Кандидат с ID {id} не найден.")
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Кандидат с ID {id} не найден.",
+        )
 
     updated_data = new_data.dict(exclude_unset=True)  # убираем None-поля
 
@@ -59,15 +71,21 @@ async def update_candidate(id: int, new_data: candidate_schemas.CandidateUpdate,
     return candidate
 
 
-@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_candidate(id: int, current_user_admin=Depends(is_current_user_admin),
-                           db: Session = Depends(get_db)):
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_candidate(
+    id: int,
+    current_user_admin=Depends(is_current_user_admin),
+    db: Session = Depends(get_db),
+):
     candidate = db.query(models.Candidate).filter(models.Candidate.id == id).first()
     if candidate is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Кандидат с ID {id} не найден.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Кандидат с ID {id} не найден.",
+        )
     db.delete(candidate)
     db.commit()
 
     await FastAPICache.clear()
 
-    return {'message:': 'Кандидат успешно удален.'}
+    return {"message:": "Кандидат успешно удален."}

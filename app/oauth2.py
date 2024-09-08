@@ -15,17 +15,15 @@ from .schemas import auth_schemas
 
 from .config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 oauth_client = OAuth()
 oauth_client.register(
     name="google",
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
     client_id=settings.google_client_id,
     client_secret=settings.google_client_secret,
-    client_kwargs={
-        'scope': 'openid profile email'
-    }
+    client_kwargs={"scope": "openid profile email"},
 )
 
 SECRET_KEY = settings.secret_key
@@ -71,17 +69,35 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return await verify_token(token, credentials_exception)
 
 
-async def is_current_user_admin(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    admin = db.query(models.Admin).filter(models.Admin.user_id == current_user.id).first()
+async def is_current_user_admin(
+    current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    admin = (
+        db.query(models.Admin).filter(models.Admin.user_id == current_user.id).first()
+    )
     if admin is None and current_user.email != settings.owner_email:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="У вас нет прав для этого действия.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="У вас нет прав для этого действия.",
+        )
 
     return current_user
 
 
-async def is_current_user_owner(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    owner = db.query(models.User).filter(models.User.id == current_user.id, models.User.email == settings.owner_email).first()
+async def is_current_user_owner(
+    current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    owner = (
+        db.query(models.User)
+        .filter(
+            models.User.id == current_user.id, models.User.email == settings.owner_email
+        )
+        .first()
+    )
     if owner is None:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="У вас нет прав для этого действия.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="У вас нет прав для этого действия.",
+        )
 
     return current_user
