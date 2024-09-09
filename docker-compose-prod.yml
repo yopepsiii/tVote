@@ -1,0 +1,39 @@
+services:
+  backend:
+    container_name: backend
+    build: .
+    volumes:
+      - ./:/usr/src/tVote/backend
+    env_file:
+      - app/.env
+    command: >
+      sh -c "alembic upgrade head ; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    depends_on:
+      - postgres
+      - redis
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/data/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+  redis:
+    image: redis:latest
+    container_name: redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+volumes:
+  postgres-db:
