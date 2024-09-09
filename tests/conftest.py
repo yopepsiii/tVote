@@ -187,3 +187,27 @@ def token_admin2(get_token, test_admin2):
 @pytest.fixture
 def token_user(get_token, test_user):
     return get_token(test_user)
+
+
+@pytest.fixture
+def test_candidate(admin_client):
+    data = {'firstname': 'test_candidate_firstname',
+            'surname': 'test_candidate_surname',
+            'year_of_study': 2,
+            'group': 'test_candidate_group',
+            'faculty': 'test_candidate_faculty',
+            'study_dirrection': 'test_candidate_study_dirrection',
+            'photo': 'test_candidate_photo'}
+    res = admin_client.post('/candidates', json=data)
+    assert res.status_code == 201
+    new_candidate = res.json()
+
+    assert new_candidate['firstname'] == 'test_candidate_firstname'
+    assert new_candidate['surname'] == 'test_candidate_surname'
+    assert new_candidate['year_of_study'] == 2
+    assert new_candidate['group'] == 'test_candidate_group'
+    assert new_candidate['faculty'] == 'test_candidate_faculty'
+    assert new_candidate['study_dirrection'] == 'test_candidate_study_dirrection'
+    assert new_candidate['photo'] == 'test_candidate_photo'
+
+    return new_candidate

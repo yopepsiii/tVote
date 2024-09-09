@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 
 from app import models
@@ -273,6 +275,13 @@ async def test_update_user_unauthorized(client, test_user, firstname, surname, e
     res = client.patch(f'/users/{test_user['id']}', json=update_data)
 
     assert res.status_code == 401
+
+
+def test_update_user_wrong_id(admin_client):
+    data = {'firstname': 'firstname', 'surname': 'surname', 'email': 'email@test.com', 'password': 'password'}
+    res = admin_client.patch(f'/users/{uuid.uuid4()}', json=data)
+
+    assert res.status_code == 404
 
 
 def test_delete_user_owner(owner_client, test_admin2):

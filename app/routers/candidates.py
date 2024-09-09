@@ -45,7 +45,7 @@ async def update_candidate(id: int, new_data: candidate_schemas.CandidateUpdate,
     candidate = candidate_query.first()
 
     if candidate is None:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Кандидат с ID {id} не найден.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Кандидат с ID {id} не найден.")
 
     updated_data = new_data.dict(exclude_unset=True)  # убираем None-поля
 
