@@ -40,7 +40,9 @@ async def create_admin(
     db.commit()
     db.refresh(new_admin)
 
-    return {"message": f"Добавлен новый администратор."}
+    user = db.query(models.User).filter(models.User.id == new_admin.user_id).first()
+
+    return user
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)

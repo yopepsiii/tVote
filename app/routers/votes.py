@@ -11,18 +11,12 @@ from app.schemas import vote_schemas
 router = APIRouter(prefix="/votes", tags=["Оценка кандидата (За/Против)"])
 
 
-@router.post("")
-async def create_vote(
-    vote: vote_schemas.VoteCreate,
-    current_user: models.User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
+@router.post('/')
+async def create_vote(vote: vote_schemas.VoteCreate, current_user: models.User = Depends(get_current_user),
+                      db: Session = Depends(get_db)):
 
-    candidate = (
-        db.query(models.Candidate)
-        .filter(models.Candidate.id == vote.candidate_id)
-        .first()
-    )
+    candidate = db.query(models.Candidate).filter(models.Candidate.id == vote.candidate_id).first()
+
     if candidate is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -43,13 +37,8 @@ async def create_vote(
 
         await FastAPICache.clear()
 
-        return {
-            "message": (
-                "Поставлена оценка ЗА"
-                if new_vote.type == 1
-                else "Поставлена оценка ПРОТИВ"
-            )
-        }
+        return new_vote
+
     else:
         if vote.type == founded_vote.type:
             db.delete(founded_vote)
@@ -65,10 +54,4 @@ async def create_vote(
 
         await FastAPICache.clear()
 
-        return {
-            "message": (
-                f"Поставлена оценка ЗА"
-                if founded_vote.type == 1
-                else "Поставлена оценка ПРОТИВ"
-            )
-        }
+        return founded_vote

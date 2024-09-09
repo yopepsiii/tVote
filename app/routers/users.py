@@ -1,4 +1,5 @@
 import uuid
+from copy import copy, deepcopy
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -27,11 +28,9 @@ async def get_user(
     return await validate(value=user, class_type=user_schemas.UserOut)
 
 
-@router.get("/", response_model=List[user_schemas.UserOut])
-@cache(namespace="users", expire=600)
-async def get_users(
-    current_user_admin=Depends(is_current_user_admin), db: Session = Depends(get_db)
-):
+@router.get('/', response_model=List[user_schemas.UserOut])
+@cache(namespace='users')
+async def get_users(current_user_admin=Depends(is_current_user_admin), db: Session = Depends(get_db)):
     users = db.query(models.User).all()
     return await validate_list(values=users, class_type=user_schemas.UserOut)
 
@@ -55,8 +54,9 @@ async def search_users(
     return users
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(new_data: user_schemas.UserCreate, db: Session = Depends(get_db)):
+@router.post('/', status_code=status.HTTP_201_CREATED)
+async def create_user(new_data: user_schemas.UserCreate,
+                      db: Session = Depends(get_db), current_user_admin=Depends(is_current_user_admin)):
     new_data.password = utils.hash(new_data.password)
     new_user = models.User(**new_data.dict())
     db.add(new_user)
@@ -65,21 +65,23 @@ async def create_user(new_data: user_schemas.UserCreate, db: Session = Depends(g
 
     await FastAPICache.clear(namespace="users")
 
-    access_token = await oauth2.create_access_token(
-        data={"user_id": str(new_user.id), "email": new_user.email}
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    return new_user
 
 
-@router.patch("/{id}", response_model=user_schemas.UserOut)
-async def update_user(
-    id: uuid.UUID,
-    updated_data: user_schemas.UserUpdate,
-    current_user_admin=Depends(is_current_user_admin),
-    db: Session = Depends(get_db),
-):
+@router.patch('/{id}')
+async def update_user(id: uuid.UUID, updated_data: user_schemas.UserUpdate,
+                      current_user_admin=Depends(is_current_user_admin), db: Session = Depends(get_db)):
+    admin = db.query(models.Admin).filter(models.Admin.user_id == id).first()
+
+    if admin and admin.user_id != current_user_admin.id and current_user_admin.email != settings.owner_email:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Вы не можете изменять данные других '
+                                                                          'администраторов.')
+
     user_query = db.query(models.User).filter(models.User.id == id)
     user = user_query.first()
+
+    unhashed_new_password = deepcopy(updated_data.password)
 
     if user is None:
         raise HTTPException(
@@ -105,18 +107,23 @@ async def update_user(
         db.commit()
         db.refresh(user)
 
-        await FastAPICache.clear(namespace="users/me")
-        await FastAPICache.clear(namespace="users")
+        if unhashed_new_password is not None:
+            user.password = unhashed_new_password
+
+        await FastAPICache.clear(namespace='users')
+        await FastAPICache.clear(namespace='users/me')
 
     return user
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(
-    id: uuid.UUID,
-    current_user_admin=Depends(is_current_user_admin),
-    db: Session = Depends(get_db),
-):
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(id: uuid.UUID, current_user_admin=Depends(is_current_user_admin),
+                      db: Session = Depends(get_db)):
+    admin = db.query(models.Admin).filter(models.Admin.user_id == id).first()
+
+    if admin and current_user_admin.email != settings.owner_email:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Вы не можете удалять других '
+                                                                          'администраторов.')
     user = db.query(models.User).filter(models.User.id == id).first()
     if user is None:
         raise HTTPException(
