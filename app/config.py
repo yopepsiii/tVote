@@ -7,8 +7,6 @@ class Settings(BaseSettings):
     database_name: str
     database_username: str
     database_password: str
-    redis_host: str
-    redis_port: int
     owner_email: str
     secret_key: str
     algorithm: str
