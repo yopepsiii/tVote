@@ -7,8 +7,6 @@ class Settings(BaseSettings):
     database_name: str
     database_username: str
     database_password: str
-    redis_host: str
-    redis_port: int
     owner_email: str
     secret_key: str
     algorithm: str
@@ -17,7 +15,7 @@ class Settings(BaseSettings):
     google_client_secret: str
 
     class Config:
-        env_file = "app/.env"
+        env_file = "../.env"
 
 
 settings = Settings()
