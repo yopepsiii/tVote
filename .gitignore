@@ -77,8 +77,6 @@ target/
 # celery beat schedule file
 celerybeat-schedule
 
-# dotenv
-app/.env
 
 # virtualenv
 venv/
@@ -183,3 +181,6 @@ fabric.properties
 
 # idea folder, uncomment if you don't need it
 # .idea
+
+# dotenv
+/.env
