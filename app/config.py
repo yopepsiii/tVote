@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     google_client_secret: str
 
     class Config:
-        env_file = "/.env"
+        env_file = "../.env"
 
 
 settings = Settings()
