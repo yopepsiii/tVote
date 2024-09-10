@@ -33,7 +33,7 @@ services:
     container_name: redis
     environment:
       - REDIS_HOST=redis
-      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PORT=6379
 
 volumes:
   postgres-db:
