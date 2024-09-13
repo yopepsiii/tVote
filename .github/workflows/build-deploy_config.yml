@@ -3,10 +3,10 @@ name: build & deploy of tvote
 on:
   push:
     branches:
-      - main
+      - prod
   pull_request:
     branches:
-      - main
+      - prod
 
 jobs:
   build:
