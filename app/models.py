@@ -53,14 +53,13 @@ class Candidate(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     firstname: Mapped[str] = mapped_column(nullable=False)
-    surname: Mapped[str] = mapped_column(nullable=False)
+    surname: Mapped[str] = mapped_column()
 
-    year_of_study: Mapped[int] = mapped_column(nullable=False)
-    group: Mapped[str] = mapped_column(nullable=False)
-    faculty: Mapped[str] = mapped_column(nullable=False)
-    study_dirrection: Mapped[str] = mapped_column(nullable=False)
+    year_of_study: Mapped[int] = mapped_column()
+    group: Mapped[str] = mapped_column()
+    study_dirrection: Mapped[str] = mapped_column()
 
-    photo: Mapped[str] = mapped_column(nullable=False)
+    photo: Mapped[str] = mapped_column()
 
     likes_count = column_property(
         select(func.count(Vote.candidate_id))
@@ -74,6 +73,27 @@ class Candidate(Base):
         .correlate_except(Vote)
         .scalar_subquery()
     )
+
+    abstaines_count: Mapped[int] = column_property(
+        select(func.count(Vote.candidate_id))
+        .where((Vote.candidate_id == id) & (Vote.type == 2))
+        .correlate_except(Vote)
+        .scalar_subquery()
+    )
+
+
+class ProfburoMember(Base):
+    __tablename__ = "ProfburoMembers"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    firstname: Mapped[str] = mapped_column(nullable=False)
+    surname: Mapped[str] = mapped_column(nullable=False)
+
+    info: Mapped[str] = mapped_column(nullable=True)
+    direction: Mapped[str] = mapped_column(nullable=True)
+
+    photo: Mapped[str] = mapped_column(nullable=False)
 
 
 class Admin(Base):
