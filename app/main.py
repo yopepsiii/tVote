@@ -7,7 +7,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-from .config import settings
+from config import settings
 
 from fastapi.middleware.cors import CORSMiddleware
 

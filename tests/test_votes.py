@@ -185,3 +185,25 @@ def test_vote_wrong_candidate_id(authorized_client, fastapi_cache):
     vote_data_1 = {'candidate_id': 999999999, 'type': 1}
     res_1 = authorized_client.post('/votes', json=vote_data_1)
     assert res_1.status_code == 404
+
+
+def test_new_like_vote(authorized_client, test_candidate, test_candidate2, fastapi_cache):
+    vote_data_1 = {'candidate_id': test_candidate['id'], 'type': 1}
+    res_1 = authorized_client.post('/votes', json=vote_data_1)
+
+    assert res_1.status_code == 200
+
+    vote_data_2 = {'candidate_id': test_candidate2['id'], 'type': 1}
+    res_2 = authorized_client.post('/votes', json=vote_data_2)
+
+    assert res_2.status_code == 200
+
+    res_3 = authorized_client.get('/candidates')
+    assert res_3.status_code == 200
+
+    candidates = res_3.json()
+
+    assert len(candidates) == 2
+    assert candidates[0]['likes_count'] == 0
+    assert candidates[1]['likes_count'] == 1
+

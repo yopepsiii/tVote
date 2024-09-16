@@ -8,7 +8,6 @@ class CandidateBase(BaseModel):
     surname: str
     year_of_study: int
     group: str
-    faculty: str
     study_dirrection: str
     photo: str
 
@@ -17,7 +16,7 @@ class CandidateOut(CandidateBase):
     id: int
     likes_count: int
     dislikes_count: int
-
+    abstaines_count: int
 
 class CandidateCreate(CandidateBase):
     pass

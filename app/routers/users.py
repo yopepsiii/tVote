@@ -1,5 +1,5 @@
 import uuid
-from copy import copy, deepcopy
+from copy import deepcopy
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -9,8 +9,8 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from starlette import status
 
-from app import utils, models, oauth2
-from app.config import settings
+from app import utils, models
+from config import settings
 from app.database import get_db
 from app.oauth2 import is_current_user_admin, get_current_user
 from app.schemas import user_schemas
@@ -22,7 +22,7 @@ router = APIRouter(prefix="/users", tags=["Пользователи"])
 @router.get("/me", response_model=user_schemas.UserOut)
 @cache(namespace="users/me")
 async def get_user(
-    current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)
+        current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     user = db.query(models.User).filter(models.User.id == current_user.id).first()
     return await validate(value=user, class_type=user_schemas.UserOut)
@@ -37,9 +37,9 @@ async def get_users(current_user_admin=Depends(is_current_user_admin), db: Sessi
 
 @router.get("/search", response_model=List[user_schemas.UserAdminSearch])
 async def search_users(
-    query: Optional[str],
-    current_user_admin=Depends(is_current_user_admin),
-    db: Session = Depends(get_db),
+        query: Optional[str],
+        current_user_admin=Depends(is_current_user_admin),
+        db: Session = Depends(get_db),
 ):
     users = (
         db.query(models.User)
@@ -65,7 +65,6 @@ async def create_user(new_data: user_schemas.UserCreate,
 
     await FastAPICache.clear(namespace="users")
 
-
     return new_user
 
 
@@ -89,8 +88,8 @@ async def update_user(id: uuid.UUID, updated_data: user_schemas.UserUpdate,
             detail=f"Пользователь с ID {id} не найден.",
         )
     if (
-        user.email == settings.owner_email
-        and current_user_admin.email != settings.owner_email
+            user.email == settings.owner_email
+            and current_user_admin.email != settings.owner_email
     ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -131,8 +130,8 @@ async def delete_user(id: uuid.UUID, current_user_admin=Depends(is_current_user_
             detail=f"Пользователь с ID {id} не найден.",
         )
     if (
-        user.email == settings.owner_email
-        and current_user_admin.email != settings.owner_email
+            user.email == settings.owner_email
+            and current_user_admin.email != settings.owner_email
     ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

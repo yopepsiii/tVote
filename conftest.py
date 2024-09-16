@@ -1,8 +1,6 @@
 from copy import copy
-from datetime import datetime
 
 import pytest
-from fastapi import Depends
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 
@@ -15,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 from starlette.datastructures import FormData
 
-from app.config import settings
+from config import settings
 from app.database import get_db
 from app.models import Base
 
@@ -195,7 +193,6 @@ def test_candidate(admin_client):
             'surname': 'test_candidate_surname',
             'year_of_study': 2,
             'group': 'test_candidate_group',
-            'faculty': 'test_candidate_faculty',
             'study_dirrection': 'test_candidate_study_dirrection',
             'photo': 'test_candidate_photo'}
     res = admin_client.post('/candidates', json=data)
@@ -206,8 +203,29 @@ def test_candidate(admin_client):
     assert new_candidate['surname'] == 'test_candidate_surname'
     assert new_candidate['year_of_study'] == 2
     assert new_candidate['group'] == 'test_candidate_group'
-    assert new_candidate['faculty'] == 'test_candidate_faculty'
     assert new_candidate['study_dirrection'] == 'test_candidate_study_dirrection'
     assert new_candidate['photo'] == 'test_candidate_photo'
+
+    return new_candidate
+
+
+@pytest.fixture
+def test_candidate2(admin_client):
+    data = {'firstname': 'test_candidate2_firstname',
+            'surname': 'test_candidate2_surname',
+            'year_of_study': 3,
+            'group': 'test_candidate2_group',
+            'study_dirrection': 'test_candidate2_study_dirrection',
+            'photo': 'test_candidate2_photo'}
+    res = admin_client.post('/candidates', json=data)
+    assert res.status_code == 201
+    new_candidate = res.json()
+
+    assert new_candidate['firstname'] == data['firstname']
+    assert new_candidate['surname'] == data['surname']
+    assert new_candidate['year_of_study'] == data['year_of_study']
+    assert new_candidate['group'] == data['group']
+    assert new_candidate['study_dirrection'] == data['study_dirrection']
+    assert new_candidate['photo'] == data['photo']
 
     return new_candidate
