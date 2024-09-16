@@ -13,7 +13,7 @@ import app.models as models
 from .database import get_db
 from .schemas import auth_schemas
 
-from .config import settings
+from config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
