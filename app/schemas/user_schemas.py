@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
-from app.schemas import vote_schemas
+from app.schemas import vote_schemas, profburo_vote_schemas
 
 
 class UserBase(BaseModel):
@@ -15,6 +15,7 @@ class UserOut(UserBase):
     id: uuid.UUID
     email: EmailStr
     votes: list[vote_schemas.VoteUserOut]
+    profburo_vote: Optional[profburo_vote_schemas.ProfburoVoteUserOut]
 
     class Config:
         from_attributes = True

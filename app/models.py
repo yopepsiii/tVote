@@ -29,7 +29,8 @@ class User(Base):
         nullable=False, server_default=func.now()
     )
 
-    votes: Mapped[list["Vote"]] = relationship(back_populates="user")
+    votes: Mapped[list["Vote"]] = relationship(cascade="all, delete-orphan")
+    profburo_vote: Mapped['ProfburoVote'] = relationship(cascade="all, delete-orphan")
 
 
 class Vote(Base):
@@ -38,10 +39,19 @@ class Vote(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("Users.id", ondelete="CASCADE"), primary_key=True
     )
-    user: Mapped["User"] = relationship(back_populates="votes", single_parent=True)
 
     candidate_id: Mapped[int] = mapped_column(
         ForeignKey("Candidates.id", ondelete="CASCADE"), primary_key=True
+    )
+
+    type: Mapped[int] = mapped_column(nullable=False)
+
+
+class ProfburoVote(Base):
+    __tablename__ = "ProfburoVotes"
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("Users.id", ondelete="CASCADE"), primary_key=True
     )
 
     type: Mapped[int] = mapped_column(nullable=False)
