@@ -23,7 +23,6 @@ class UserOut(UserBase):
 
 class UserCreate(UserBase):
     email: EmailStr
-    password: str
 
 
 class UserUpdate(BaseModel):

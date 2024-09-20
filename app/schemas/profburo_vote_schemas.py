@@ -1,3 +1,4 @@
+from pydantic import BaseModel, conint
 
 
 class ProfburoVoteBase(BaseModel):

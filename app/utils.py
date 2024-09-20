@@ -22,7 +22,7 @@ async def validate(value, class_type):
     return class_type.model_validate(value)
 
 
-async def generate_secure_password(length=30):
-    characters = string.ascii_letters + string.digits + string.punctuation
+async def generate_secure_password(length: int = 30):
+    characters = string.ascii_letters + string.digits
     password = "".join(secrets.choice(characters) for i in range(length))
     return password

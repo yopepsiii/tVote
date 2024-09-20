@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int
     google_client_id: str
     google_client_secret: str
+    ms_api_key: str
+    ms_domain: str
 
     class Config:
         env_file = ".env"
