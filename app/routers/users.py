@@ -2,14 +2,17 @@ import uuid
 from copy import deepcopy
 from typing import List, Optional
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
+from mailersend import emails
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from starlette import status
 
 from app import utils, models
+from app.mail_service import MailService
 from config import settings
 from app.database import get_db
 from app.oauth2 import is_current_user_admin, get_current_user
@@ -57,13 +60,28 @@ async def search_users(
 @router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_user(new_data: user_schemas.UserCreate,
                       db: Session = Depends(get_db), current_user_admin=Depends(is_current_user_admin)):
-    new_data.password = utils.hash(new_data.password)
-    new_user = models.User(**new_data.dict())
+    password = await utils.generate_secure_password(length=15)
+
+    hashed_password = utils.hash(password)
+    new_user = models.User(**new_data.dict(), password=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
     await FastAPICache.clear(namespace="users")
+
+    to = [
+        {
+            'name': new_user.firstname,
+            'email': new_user.email
+        }
+    ]
+
+    plain_text = f'Ваш пароль для входа на платформу: {password}'
+
+    MailService.send_email(to, 'Ваш пароль', plain_text)
+
+    new_user.password = password  # Админу выдается незашифрованный пароль
 
     return new_user
 
@@ -108,6 +126,18 @@ async def update_user(id: uuid.UUID, updated_data: user_schemas.UserUpdate,
 
         if unhashed_new_password is not None:
             user.password = unhashed_new_password
+
+            to = [
+                {
+                    'name': user.firstname,
+                    'email': user.email
+                }
+            ]
+
+            plain_text = f'Вот ваш измененный пароль для входа на платформу: {unhashed_new_password}'
+
+            MailService.send_email(to, 'Измененный пароль', plain_text)
+
 
         await FastAPICache.clear(namespace='users')
         await FastAPICache.clear(namespace='users/me')

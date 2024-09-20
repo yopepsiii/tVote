@@ -16,6 +16,7 @@ from redis.asyncio.connection import ConnectionPool
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
+from app.utils import hash
 from .routers import auth, candidates, users, votes, admins
 
 app = FastAPI(root_path="/api/v1")
@@ -40,6 +41,7 @@ app.include_router(admins.router)
 
 @app.get("/")
 async def index():
+    print(hash('test'))
     return {"message": "yo tVote's API"}
 
 
@@ -53,12 +55,12 @@ async def startup():
 
 
 def api_key_builder(
-    func: Callable,
-    namespace: Optional[str] = "",
-    request: Optional[Request] = None,
-    response: Optional[Response] = None,
-    args: Optional[tuple] = None,
-    kwargs: Optional[dict] = None,
+        func: Callable,
+        namespace: Optional[str] = "",
+        request: Optional[Request] = None,
+        response: Optional[Response] = None,
+        args: Optional[tuple] = None,
+        kwargs: Optional[dict] = None,
 ) -> str:
     # SOLUTION: https://github.com/long2ice/fastapi-cache/issues/26
     print("kwargs.items():", kwargs.items())
@@ -72,9 +74,9 @@ def api_key_builder(
 
     prefix = f"{namespace}:"
     cache_key = (
-        prefix
-        + hashlib.md5(  # nosec:B303
-            f"{func.__module__}:{func.__name__}:{args}:{arguments}".encode()
-        ).hexdigest()
+            prefix
+            + hashlib.md5(  # nosec:B303
+        f"{func.__module__}:{func.__name__}:{args}:{arguments}".encode()
+    ).hexdigest()
     )
     return cache_key

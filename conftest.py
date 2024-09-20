@@ -55,23 +55,19 @@ def client(session):
 
 @pytest.fixture
 def create_user(owner_client):
-    def _create_user(email, password, firstname, surname):
+    def _create_user(email, firstname, surname):
         user_credentials = {
             'firstname': firstname,
             'surname': surname,
             "email": email,
-            "password": password,
         }
         res = owner_client.post("/users", json=user_credentials)
         assert res.status_code == 201
         new_user = res.json()
 
-        new_user['password'] = password
-
         assert new_user['firstname'] == firstname
         assert new_user['surname'] == surname
         assert new_user['email'] == email
-        assert new_user['password'] == password
 
         return new_user
 
@@ -80,30 +76,31 @@ def create_user(owner_client):
 
 @pytest.fixture
 def test_user(create_user):
-    return create_user('test_user@test.com', "test", "test", "test")
+    return create_user('test_user@test.com', "test", "test")
 
 
 @pytest.fixture
 def test_admin(owner_client, create_user):
-    new_user = create_user("test_admin@test.com", "test", "test_admin", "test_admin")
+    new_user = create_user("test_admin@test.com", "test", "test_admin")
 
     res = owner_client.post("/admins", json={'user_id': new_user['id']})
     assert res.status_code == 201
 
     new_admin = res.json()
-    new_admin['password'] = 'test'
+
+    new_admin['password'] = new_user['password']
+
     return new_admin
 
 
 @pytest.fixture
 def test_admin2(owner_client, create_user):
-    new_user = create_user("test_admin2@test.com", "test2", "test_admin2", "test_admin2")
+    new_user = create_user("test_admin2@test.com", "test2", "test_admin2")
 
     res = owner_client.post("/admins", json={'user_id': new_user['id']})
     assert res.status_code == 201
 
     new_admin = res.json()
-    new_admin['password'] = 'test2'
     return new_admin
 
 
