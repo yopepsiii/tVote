@@ -24,4 +24,7 @@ docker compose -f docker-compose-dev.yml up -d
 http://localhost/api/v1/
 ```
 
-Позже разверну API на сервере и добавлю сюда URL.
+## API URL
+```bash
+http://89.169.38.254/api/v1
+```
