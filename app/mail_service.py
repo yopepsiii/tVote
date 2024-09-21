@@ -26,10 +26,7 @@ class MailService:
 
         res = mail_client.send(mail_body)
 
-        print(f'INFO: \tПользователь {to[0]['name']} ({to[0]['email']}) --- {res}')
+        print(f"INFO: \tПользователь {to[0]['name']} ({to[0]['email']}) --- {res}")
 
         # Заскоментировать для тестов, чтобы не тратить лимиты
         # return True
-
-
-

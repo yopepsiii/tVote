@@ -25,24 +25,26 @@ router = APIRouter(prefix="/users", tags=["Пользователи"])
 @router.get("/me", response_model=user_schemas.UserOut)
 @cache(namespace="users/me")
 async def get_user(
-        current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)
+    current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     user = db.query(models.User).filter(models.User.id == current_user.id).first()
     return await validate(value=user, class_type=user_schemas.UserOut)
 
 
-@router.get('/', response_model=List[user_schemas.UserOut])
-@cache(namespace='users')
-async def get_users(current_user_admin=Depends(is_current_user_admin), db: Session = Depends(get_db)):
+@router.get("/", response_model=List[user_schemas.UserOut])
+@cache(namespace="users")
+async def get_users(
+    current_user_admin=Depends(is_current_user_admin), db: Session = Depends(get_db)
+):
     users = db.query(models.User).all()
     return await validate_list(values=users, class_type=user_schemas.UserOut)
 
 
 @router.get("/search", response_model=List[user_schemas.UserAdminSearch])
 async def search_users(
-        query: Optional[str],
-        current_user_admin=Depends(is_current_user_admin),
-        db: Session = Depends(get_db),
+    query: Optional[str],
+    current_user_admin=Depends(is_current_user_admin),
+    db: Session = Depends(get_db),
 ):
     users = (
         db.query(models.User)
@@ -57,9 +59,12 @@ async def search_users(
     return users
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED)
-async def create_user(new_data: user_schemas.UserCreate,
-                      db: Session = Depends(get_db), current_user_admin=Depends(is_current_user_admin)):
+@router.post("/", status_code=status.HTTP_201_CREATED)
+async def create_user(
+    new_data: user_schemas.UserCreate,
+    db: Session = Depends(get_db),
+    current_user_admin=Depends(is_current_user_admin),
+):
     password = await utils.generate_secure_password(length=15)
 
     hashed_password = utils.hash(password)
@@ -70,30 +75,35 @@ async def create_user(new_data: user_schemas.UserCreate,
 
     await FastAPICache.clear(namespace="users")
 
-    to = [
-        {
-            'name': new_user.firstname,
-            'email': new_user.email
-        }
-    ]
+    to = [{"name": new_user.firstname, "email": new_user.email}]
 
-    plain_text = f'Ваш пароль для входа на платформу: {password}'
+    plain_text = f"Ваш пароль для входа на платформу: {password}"
 
-    MailService.send_email(to, 'Ваш пароль', plain_text)
+    MailService.send_email(to, "Ваш пароль", plain_text)
 
     new_user.password = password  # Админу выдается незашифрованный пароль
 
     return new_user
 
 
-@router.patch('/{id}')
-async def update_user(id: uuid.UUID, updated_data: user_schemas.UserUpdate,
-                      current_user_admin=Depends(is_current_user_admin), db: Session = Depends(get_db)):
+@router.patch("/{id}")
+async def update_user(
+    id: uuid.UUID,
+    updated_data: user_schemas.UserUpdate,
+    current_user_admin=Depends(is_current_user_admin),
+    db: Session = Depends(get_db),
+):
     admin = db.query(models.Admin).filter(models.Admin.user_id == id).first()
 
-    if admin and admin.user_id != current_user_admin.id and current_user_admin.email != settings.owner_email:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Вы не можете изменять данные других '
-                                                                          'администраторов.')
+    if (
+        admin
+        and admin.user_id != current_user_admin.id
+        and current_user_admin.email != settings.owner_email
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Вы не можете изменять данные других " "администраторов.",
+        )
 
     user_query = db.query(models.User).filter(models.User.id == id)
     user = user_query.first()
@@ -106,8 +116,8 @@ async def update_user(id: uuid.UUID, updated_data: user_schemas.UserUpdate,
             detail=f"Пользователь с ID {id} не найден.",
         )
     if (
-            user.email == settings.owner_email
-            and current_user_admin.email != settings.owner_email
+        user.email == settings.owner_email
+        and current_user_admin.email != settings.owner_email
     ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -127,32 +137,31 @@ async def update_user(id: uuid.UUID, updated_data: user_schemas.UserUpdate,
         if unhashed_new_password is not None:
             user.password = unhashed_new_password
 
-            to = [
-                {
-                    'name': user.firstname,
-                    'email': user.email
-                }
-            ]
+            to = [{"name": user.firstname, "email": user.email}]
 
-            plain_text = f'Вот ваш измененный пароль для входа на платформу: {unhashed_new_password}'
+            plain_text = f"Вот ваш измененный пароль для входа на платформу: {unhashed_new_password}"
 
-            MailService.send_email(to, 'Измененный пароль', plain_text)
+            MailService.send_email(to, "Измененный пароль", plain_text)
 
-
-        await FastAPICache.clear(namespace='users')
-        await FastAPICache.clear(namespace='users/me')
+        await FastAPICache.clear(namespace="users")
+        await FastAPICache.clear(namespace="users/me")
 
     return user
 
 
-@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(id: uuid.UUID, current_user_admin=Depends(is_current_user_admin),
-                      db: Session = Depends(get_db)):
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(
+    id: uuid.UUID,
+    current_user_admin=Depends(is_current_user_admin),
+    db: Session = Depends(get_db),
+):
     admin = db.query(models.Admin).filter(models.Admin.user_id == id).first()
 
     if admin and current_user_admin.email != settings.owner_email:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Вы не можете удалять других '
-                                                                          'администраторов.')
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Вы не можете удалять других " "администраторов.",
+        )
     user = db.query(models.User).filter(models.User.id == id).first()
     if user is None:
         raise HTTPException(
@@ -160,8 +169,8 @@ async def delete_user(id: uuid.UUID, current_user_admin=Depends(is_current_user_
             detail=f"Пользователь с ID {id} не найден.",
         )
     if (
-            user.email == settings.owner_email
-            and current_user_admin.email != settings.owner_email
+        user.email == settings.owner_email
+        and current_user_admin.email != settings.owner_email
     ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

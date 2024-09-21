@@ -57,17 +57,17 @@ def client(session):
 def create_user(owner_client):
     def _create_user(email, firstname, surname):
         user_credentials = {
-            'firstname': firstname,
-            'surname': surname,
+            "firstname": firstname,
+            "surname": surname,
             "email": email,
         }
         res = owner_client.post("/users", json=user_credentials)
         assert res.status_code == 201
         new_user = res.json()
 
-        assert new_user['firstname'] == firstname
-        assert new_user['surname'] == surname
-        assert new_user['email'] == email
+        assert new_user["firstname"] == firstname
+        assert new_user["surname"] == surname
+        assert new_user["email"] == email
 
         return new_user
 
@@ -76,19 +76,19 @@ def create_user(owner_client):
 
 @pytest.fixture
 def test_user(create_user):
-    return create_user('test_user@test.com', "test", "test")
+    return create_user("test_user@test.com", "test", "test")
 
 
 @pytest.fixture
 def test_admin(owner_client, create_user):
     new_user = create_user("test_admin@test.com", "test", "test_admin")
 
-    res = owner_client.post("/admins", json={'user_id': new_user['id']})
+    res = owner_client.post("/admins", json={"user_id": new_user["id"]})
     assert res.status_code == 201
 
     new_admin = res.json()
 
-    new_admin['password'] = new_user['password']
+    new_admin["password"] = new_user["password"]
 
     return new_admin
 
@@ -97,7 +97,7 @@ def test_admin(owner_client, create_user):
 def test_admin2(owner_client, create_user):
     new_user = create_user("test_admin2@test.com", "test2", "test_admin2")
 
-    res = owner_client.post("/admins", json={'user_id': new_user['id']})
+    res = owner_client.post("/admins", json={"user_id": new_user["id"]})
     assert res.status_code == 201
 
     new_admin = res.json()
@@ -106,13 +106,24 @@ def test_admin2(owner_client, create_user):
 
 @pytest.fixture
 def test_owner(session):
-    user = models.User(firstname='test', surname='test', email=settings.owner_email, password=utils.hash('test'))
+    user = models.User(
+        firstname="test",
+        surname="test",
+        email=settings.owner_email,
+        password=utils.hash("test"),
+    )
     session.add(user)
     session.commit()
     session.refresh(user)
 
-    user_model = models.User(id=user.id, firstname=user.firstname, surname=user.surname, email=user.email,
-                             password='test', created_at=user.created_at)
+    user_model = models.User(
+        id=user.id,
+        firstname=user.firstname,
+        surname=user.surname,
+        email=user.email,
+        password="test",
+        created_at=user.created_at,
+    )
 
     return user_model.__dict__
 
@@ -120,7 +131,7 @@ def test_owner(session):
 @pytest.fixture
 def get_token(client):
     def _get_token(user):
-        formData = FormData(username=user['email'], password=user['password'])
+        formData = FormData(username=user["email"], password=user["password"])
         res = client.post(
             "/login",
             data=formData,
@@ -137,7 +148,7 @@ def get_authorized_client(client):
         new_client = copy(client)
         new_client.headers = {
             **new_client.headers,
-            "Authorization": f'Bearer {token['access_token']}',
+            "Authorization": f"Bearer {token['access_token']}",
         }
         return new_client
 
@@ -186,43 +197,47 @@ def token_user(get_token, test_user):
 
 @pytest.fixture
 def test_candidate(admin_client):
-    data = {'firstname': 'test_candidate_firstname',
-            'surname': 'test_candidate_surname',
-            'year_of_study': 2,
-            'group': 'test_candidate_group',
-            'study_dirrection': 'test_candidate_study_dirrection',
-            'photo': 'test_candidate_photo'}
-    res = admin_client.post('/candidates', json=data)
+    data = {
+        "firstname": "test_candidate_firstname",
+        "surname": "test_candidate_surname",
+        "year_of_study": 2,
+        "group": "test_candidate_group",
+        "study_dirrection": "test_candidate_study_dirrection",
+        "photo": "test_candidate_photo",
+    }
+    res = admin_client.post("/candidates", json=data)
     assert res.status_code == 201
     new_candidate = res.json()
 
-    assert new_candidate['firstname'] == 'test_candidate_firstname'
-    assert new_candidate['surname'] == 'test_candidate_surname'
-    assert new_candidate['year_of_study'] == 2
-    assert new_candidate['group'] == 'test_candidate_group'
-    assert new_candidate['study_dirrection'] == 'test_candidate_study_dirrection'
-    assert new_candidate['photo'] == 'test_candidate_photo'
+    assert new_candidate["firstname"] == "test_candidate_firstname"
+    assert new_candidate["surname"] == "test_candidate_surname"
+    assert new_candidate["year_of_study"] == 2
+    assert new_candidate["group"] == "test_candidate_group"
+    assert new_candidate["study_dirrection"] == "test_candidate_study_dirrection"
+    assert new_candidate["photo"] == "test_candidate_photo"
 
     return new_candidate
 
 
 @pytest.fixture
 def test_candidate2(admin_client):
-    data = {'firstname': 'test_candidate2_firstname',
-            'surname': 'test_candidate2_surname',
-            'year_of_study': 3,
-            'group': 'test_candidate2_group',
-            'study_dirrection': 'test_candidate2_study_dirrection',
-            'photo': 'test_candidate2_photo'}
-    res = admin_client.post('/candidates', json=data)
+    data = {
+        "firstname": "test_candidate2_firstname",
+        "surname": "test_candidate2_surname",
+        "year_of_study": 3,
+        "group": "test_candidate2_group",
+        "study_dirrection": "test_candidate2_study_dirrection",
+        "photo": "test_candidate2_photo",
+    }
+    res = admin_client.post("/candidates", json=data)
     assert res.status_code == 201
     new_candidate = res.json()
 
-    assert new_candidate['firstname'] == data['firstname']
-    assert new_candidate['surname'] == data['surname']
-    assert new_candidate['year_of_study'] == data['year_of_study']
-    assert new_candidate['group'] == data['group']
-    assert new_candidate['study_dirrection'] == data['study_dirrection']
-    assert new_candidate['photo'] == data['photo']
+    assert new_candidate["firstname"] == data["firstname"]
+    assert new_candidate["surname"] == data["surname"]
+    assert new_candidate["year_of_study"] == data["year_of_study"]
+    assert new_candidate["group"] == data["group"]
+    assert new_candidate["study_dirrection"] == data["study_dirrection"]
+    assert new_candidate["photo"] == data["photo"]
 
     return new_candidate

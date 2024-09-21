@@ -18,6 +18,7 @@ class CandidateOut(CandidateBase):
     dislikes_count: int
     abstaines_count: int
 
+
 class CandidateCreate(CandidateBase):
     pass
 

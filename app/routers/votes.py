@@ -11,10 +11,17 @@ from app.schemas import vote_schemas, profburo_vote_schemas
 router = APIRouter(prefix="/votes", tags=["Оценка кандидата (За/Против/Воздержался)"])
 
 
-@router.post('/')
-async def create_vote(vote: vote_schemas.VoteCreate, current_user: models.User = Depends(get_current_user),
-                      db: Session = Depends(get_db)):
-    candidate = db.query(models.Candidate).filter(models.Candidate.id == vote.candidate_id).first()
+@router.post("/")
+async def create_vote(
+    vote: vote_schemas.VoteCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    candidate = (
+        db.query(models.Candidate)
+        .filter(models.Candidate.id == vote.candidate_id)
+        .first()
+    )
 
     if candidate is None:
         raise HTTPException(
@@ -30,7 +37,11 @@ async def create_vote(vote: vote_schemas.VoteCreate, current_user: models.User =
 
     if founded_vote is None:
         if vote.type == 1:
-            like = db.query(models.Vote).filter(models.Vote.user_id == current_user.id, models.Vote.type == 1).first()
+            like = (
+                db.query(models.Vote)
+                .filter(models.Vote.user_id == current_user.id, models.Vote.type == 1)
+                .first()
+            )
 
             if like:
                 like.candidate_id = vote.candidate_id
@@ -60,8 +71,15 @@ async def create_vote(vote: vote_schemas.VoteCreate, current_user: models.User =
             return {"message": "Оценка удалена"}
 
         if vote.type == 1:
-            like = db.query(models.Vote).filter(models.Vote.user_id == current_user.id, models.Vote.type == 1,
-                                                models.Vote.candidate_id != vote.candidate_id).first()
+            like = (
+                db.query(models.Vote)
+                .filter(
+                    models.Vote.user_id == current_user.id,
+                    models.Vote.type == 1,
+                    models.Vote.candidate_id != vote.candidate_id,
+                )
+                .first()
+            )
 
             if like:
                 db.delete(founded_vote)
@@ -85,23 +103,27 @@ async def create_vote(vote: vote_schemas.VoteCreate, current_user: models.User =
         return founded_vote
 
 
-@router.post('/profburo')
-async def create_vote_profburo(profburo_vote: profburo_vote_schemas.ProfburoVoteCreate,
-                               current_user: models.User = Depends(get_current_user),
-                               db: Session = Depends(get_db)):
+@router.post("/profburo")
+async def create_vote_profburo(
+    profburo_vote: profburo_vote_schemas.ProfburoVoteCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     vote_query = db.query(models.ProfburoVote).filter(
         models.ProfburoVote.user_id == current_user.id
     )
     founded_profburo_vote = vote_query.first()
 
     if founded_profburo_vote is None:
-        new_profburo_vote = models.ProfburoVote(user_id=current_user.id, type=profburo_vote.type)
+        new_profburo_vote = models.ProfburoVote(
+            user_id=current_user.id, type=profburo_vote.type
+        )
         db.add(new_profburo_vote)
         db.commit()
         db.refresh(new_profburo_vote)
 
-        await FastAPICache.clear(namespace='users')
-        await FastAPICache.clear(namespace='users/me')
+        await FastAPICache.clear(namespace="users")
+        await FastAPICache.clear(namespace="users/me")
 
         return new_profburo_vote
     else:
@@ -109,8 +131,8 @@ async def create_vote_profburo(profburo_vote: profburo_vote_schemas.ProfburoVote
             db.delete(founded_profburo_vote)
             db.commit()
 
-            await FastAPICache.clear(namespace='users')
-            await FastAPICache.clear(namespace='users/me')
+            await FastAPICache.clear(namespace="users")
+            await FastAPICache.clear(namespace="users/me")
 
             return {"message": "Оценка удалена"}
 
@@ -118,7 +140,7 @@ async def create_vote_profburo(profburo_vote: profburo_vote_schemas.ProfburoVote
         db.commit()
         db.refresh(founded_profburo_vote)
 
-        await FastAPICache.clear(namespace='users')
-        await FastAPICache.clear(namespace='users/me')
+        await FastAPICache.clear(namespace="users")
+        await FastAPICache.clear(namespace="users/me")
 
         return founded_profburo_vote

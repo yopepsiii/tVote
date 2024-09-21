@@ -30,7 +30,7 @@ class User(Base):
     )
 
     votes: Mapped[list["Vote"]] = relationship(cascade="all, delete-orphan")
-    profburo_vote: Mapped['ProfburoVote'] = relationship(cascade="all, delete-orphan")
+    profburo_vote: Mapped["ProfburoVote"] = relationship(cascade="all, delete-orphan")
 
 
 class Vote(Base):
