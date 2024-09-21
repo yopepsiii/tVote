@@ -17,13 +17,16 @@ jobs:
       database_hostname: ${{secrets.database_hostname}}
       database_port: ${{secrets.database_port}}
       database_password: ${{secrets.database_password}}
-      database_name: ${{secrets.database_name}}
+      database_name: ${{secrets.database_name}}_test
       database_username: ${{secrets.database_username}}
       secret_key: ${{secrets.secret_key}}
       algorithm: ${{secrets.algorithm}}
       access_token_expire_minutes: ${{secrets.access_token_expire_minutes}}
       google_client_id: ${{secrets.google_client_id}}
       google_client_secret: ${{secrets.google_client_secret}}
+      ms_api_key: ${{secrets.ms_api_key}}
+      ms_domain: ${{secrets.ms_domain}}
+
 
     services:
       postgres:
