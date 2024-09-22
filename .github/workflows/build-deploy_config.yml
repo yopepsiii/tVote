@@ -106,7 +106,7 @@ jobs:
           username: ${{secrets.PROD_USERNAME}}
           password: ${{secrets.PROD_PASSWORD}}
           script: |
-            cd app/src/tVote
+            cd tVote
             git pull
             docker-compose -f docker-compose-prod.yml pull
             docker compose -f docker-compose-prod.yml up -d
