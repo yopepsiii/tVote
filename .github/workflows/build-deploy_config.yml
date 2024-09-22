@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [build]
     environment:
-      name: production
+      name: prod
     steps:
       - name: checkout our code
         uses: actions/checkout@v4.1.1
