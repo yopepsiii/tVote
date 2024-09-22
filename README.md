@@ -1,30 +1,19 @@
 ![tVote-logo](https://i.imgur.com/PGoAPme.png)
-## Какой стек?
-FastAPI + PostgreSQL + Redis
 
-## Как открыть документацию к API?
+## Стэк
+FastAPI · PostgreSQL · Redis · Docker · Nginx  
+Авторизация - JWT
+
+## Запустить локально
+Клонируем репозиторий → Устанавливаем [**Docker**](https://www.docker.com/products/docker-desktop/) → Поднимаем контейнеры через `docker compose` →  
 ```bash
-http://localhost/api/v1/docs
+docker compose -f docker-compose-prod.yml up
 ```
-Это документация, которая автоматически сделана фреймворком. Если не прогружается - попробуй с VPN
-
-## Как запустить локально?  
-Будем юзать докер, надеюсь знаком с ним,  
-если нет - гугли, темка очень удобная для быстрого развертывания проектов.
-
-## Шарю за докер, дальше че?  
-Клонируешь себе репозиторий -> пишешь в терминал:  
+URL для запросов:  
 ```bash
-docker compose -f docker-compose-dev.yml up -d
+http://localhost/api/v1
 ```
-Ждешь пока запулятся все docker images  
-
-Когда это все-таки случилось, готово. Можешь посылать запросы на URL:
-```
-http://localhost/api/v1/
-```
-
-## API URL
-```bash
-http://89.169.38.254/api/v1
-```
+Документация OpenAPI (_w/ swagger_) - `/docs`  
+Postman-коллекция - писать в тг [@oshinogj](https://t.me/oshinogj)  
+## Публичный API
+URL - писать в тг [@oshinogj](https://t.me/oshinogj)
