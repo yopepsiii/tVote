@@ -10,33 +10,30 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     environment:
       name: test
     env:
-      database_hostname: ${{secrets.database_hostname}}
-      database_port: ${{secrets.database_port}}
-      database_password: ${{secrets.database_password}}
-      database_name: ${{secrets.database_name}}_test
-      database_username: ${{secrets.database_username}}
-      secret_key: ${{secrets.secret_key}}
-      algorithm: ${{secrets.algorithm}}
-      access_token_expire_minutes: ${{secrets.access_token_expire_minutes}}
-      google_client_id: ${{secrets.google_client_id}}
-      google_client_secret: ${{secrets.google_client_secret}}
-      ms_api_key: ${{secrets.ms_api_key}}
-      ms_domain: ${{secrets.ms_domain}}
+      DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      SECRET_KEY: ${{secrets.SECRET_KEY}}
+      ALGORITHM: ${{secrets.ALGORITHM}}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+      GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
+      MS_API_KEY: ${{secrets.MS_API_KEY}}
+      MS_DOMAIN: ${{secrets.MS_DOMAIN}}
 
 
     services:
       postgres:
         image: postgres
         env:
-          postgres_password: ${{secrets.database_password}}
-          postgres_db: ${{secrets.database_name}}_test
-
-        ports:
-          - 5432:5432
+          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+          POSTGRES_DB: ${{secrets.DATABASE_NAME}}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -47,8 +44,8 @@ jobs:
         ports:
           - 6379:6379
         env:
-          redis_host: redis
-          redis_port: 6379
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
 
     steps:
       #  --------------- Тестирование на машине GitHub ---------------
