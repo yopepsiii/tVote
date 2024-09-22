@@ -41,8 +41,8 @@ app.include_router(admins.router)
 
 @app.get("/")
 async def index():
-    print(hash("test"))
-    return {"message": "yo tVote's API"}
+    print(hash("Absolute229"))
+    return {"message": "API от yopepsi 🧪"}
 
 
 @app.on_event("startup")

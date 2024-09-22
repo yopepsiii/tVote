@@ -10,27 +10,31 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     environment:
       name: test
     env:
-      database_hostname: ${{secrets.database_hostname}}
-      database_port: ${{secrets.database_port}}
-      database_password: ${{secrets.database_password}}
-      database_name: ${{secrets.database_name}}
-      database_username: ${{secrets.database_username}}
-      secret_key: ${{secrets.secret_key}}
-      algorithm: ${{secrets.algorithm}}
-      access_token_expire_minutes: ${{secrets.access_token_expire_minutes}}
-      google_client_id: ${{secrets.google_client_id}}
-      google_client_secret: ${{secrets.google_client_secret}}
+      DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      OWNER_EMAIL: ${{secrets.OWNER_EMAIL}}
+      SECRET_KEY: ${{secrets.SECRET_KEY}}
+      ALGORITHM: ${{secrets.ALGORITHM}}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+      GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
+      GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
+      MS_API_KEY: ${{secrets.MS_API_KEY}}
+      MS_DOMAIN: ${{secrets.MS_DOMAIN}}
+
 
     services:
       postgres:
         image: postgres
         env:
-          postgres_password: ${{secrets.database_password}}
-          postgres_db: ${{secrets.database_name}}_test
+          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+          POSTGRES_DB: ${{secrets.DATABASE_NAME}}-test
         ports:
           - 5432:5432
         options: >-
@@ -43,8 +47,8 @@ jobs:
         ports:
           - 6379:6379
         env:
-          redis_host: redis
-          redis_port: 6379
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
 
     steps:
       #  --------------- Тестирование на машине GitHub ---------------
@@ -72,34 +76,39 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           version: v0.10.0
+      - name: List files
+        run: ls -la
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
           context: ./
-          file: ./dockerfile
+          file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.docker_hub_username }}/tVote:latest
+          tags: ${{ secrets.docker_hub_username }}/tvote:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
+
+
   deploy:
-    runs-on: ubuntu
+    runs-on: ubuntu-20.04
     needs: [build]
     environment:
-      name: production
+      name: prod
     steps:
       - name: checkout our code
         uses: actions/checkout@v4.1.1
       - name: deploy to ubuntu vps
         uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.prod_host}}
-          username: ${{secrets.prod_username}}
-          password: ${{secrets.prod_password}}
+          host: ${{secrets.PROD_HOST}}
+          username: ${{secrets.PROD_USERNAME}}
+          password: ${{secrets.PROD_PASSWORD}}
           script: |
-            cd app/src/tVote
+            cd tVote
             git pull
+            docker compose -f docker-compose-prod.yml pull
             docker compose -f docker-compose-prod.yml up -d
 
           # .env уже должен лежать на серваке
