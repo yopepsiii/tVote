@@ -7,7 +7,7 @@ FastAPI · PostgreSQL · Redis · Docker · Nginx
 ## Запустить локально
 Клонируем репозиторий → Устанавливаем [**Docker**](https://www.docker.com/products/docker-desktop/) → Поднимаем контейнеры через `docker compose` →  
 ```bash
-docker compose -f docker-compose-prod.yml up
+docker compose -f docker-compose-dev.yml up
 ```
 URL для запросов:  
 ```bash
