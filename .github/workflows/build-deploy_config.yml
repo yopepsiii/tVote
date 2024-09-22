@@ -102,9 +102,9 @@ jobs:
       - name: deploy to ubuntu vps
         uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.prod_host}}
-          username: ${{secrets.prod_username}}
-          password: ${{secrets.prod_password}}
+          host: ${{secrets.PROD_HOST}}
+          username: ${{secrets.PROD_USERNAME}}
+          password: ${{secrets.PROD_PASSWORD}}
           script: |
             cd app/src/tVote
             git pull
