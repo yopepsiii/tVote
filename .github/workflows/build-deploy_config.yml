@@ -22,7 +22,7 @@ jobs:
       SECRET_KEY: ${{secrets.SECRET_KEY}}
       ALGORITHM: ${{secrets.ALGORITHM}}
       ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
-      GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
       GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
       MS_API_KEY: ${{secrets.MS_API_KEY}}
       MS_DOMAIN: ${{secrets.MS_DOMAIN}}
