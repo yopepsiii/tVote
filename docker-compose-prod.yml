@@ -21,7 +21,7 @@ services:
     depends_on:
       - backend
   postgres:
-    image: postgres
+    image: postgres:16
     container_name: postgres
     ports:
       - 5432:5432  # для доступа из pgAdmin
