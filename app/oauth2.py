@@ -17,15 +17,6 @@ from config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-oauth_client = OAuth()
-oauth_client.register(
-    name="google",
-    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-    client_id=settings.google_client_id,
-    client_secret=settings.google_client_secret,
-    client_kwargs={"scope": "openid profile email"},
-)
-
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
