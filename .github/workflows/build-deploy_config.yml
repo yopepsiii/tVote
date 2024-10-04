@@ -110,7 +110,6 @@ jobs:
             git fetch origin
             git checkout prod
             git pull origin prod
-            docker compose -f docker-compose-prod.yml pull
             docker compose -f docker-compose-prod.yml up -d
 
           # .env уже должен лежать на серваке
