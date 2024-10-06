@@ -79,7 +79,7 @@ async def create_user(
 
     plain_text = f"Ваш пароль для входа на платформу: {password}"
 
-    MailService.send_email(to, "Ваш пароль", plain_text)
+    MailService.send_email(to, "Пароль для входа", plain_text)
 
     new_user.password = password  # Админу выдается незашифрованный пароль
 

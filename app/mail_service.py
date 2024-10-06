@@ -11,7 +11,7 @@ class MailService:
         mail_body = {}
 
         mail_from = {
-            "name": "tVote",
+            "name": "Т-Голосование",
             "email": f"noreply@{settings.ms_domain}",
         }
 

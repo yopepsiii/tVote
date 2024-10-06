@@ -20,7 +20,7 @@ app = FastAPI(root_path="/api/v1")
 
 origins = [
     "http://localhost:3000",
-    "http://0.0.0.0:3000",
+    "http://192.168.31.122:3000",
     "https://vote-ist.ru"
 ]
 
