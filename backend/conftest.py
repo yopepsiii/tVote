@@ -4,8 +4,8 @@ import pytest
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 
-from app import models, utils
-from app.main import app
+from backend.app import models, utils
+from backend.app.main import app
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -14,8 +14,8 @@ from fastapi.testclient import TestClient
 from starlette.datastructures import FormData
 
 from config import settings
-from app.database import get_db
-from app.models import Base
+from backend.app.database import get_db
+from backend.app.models import Base
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}-test"
 
