@@ -1,0 +1,121 @@
+.footer {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    border-radius: 30px 30px 0 0;
+    background: linear-gradient(180deg, #00222B 0%, #004052 100%);
+    color: #d5d5d5;
+    font-family: 'Montserrat', sans-serif;
+    padding: 50px 0;
+}
+
+.footer__info {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.info__links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 100px;
+    text-align: center;
+
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.info__links div {
+    transition: all 0.5s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.info__socials {
+    display: flex;
+    padding: 20px 100px;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+
+    border-radius: 30px;
+    border: 1px solid #FFF;
+
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.footer__line {
+    width: 70vw;
+    height: 2px;
+}
+
+.info__developers {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
+.info__developers a, .footer__info a {
+    transition: all 0.5s;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #d5d5d5;
+}
+
+.footer__info a:hover, .info__links div:hover, .info__developers a:hover {
+    filter: brightness(150%);
+}
+
+.info__socials img {
+    margin-right: 5px;
+    width: 25px;
+    height: 25px;
+}
+
+.info__links img, .info__developers img {
+    width: 18px;
+}
+
+.info__developers img {
+    margin-right: 5px;
+}
+
+@media screen and (max-width: 1000px) {
+    .info__links {
+        gap: 40px;
+    }
+
+    .info__socials {
+        gap: 10px;
+        padding: 20px 30px;
+    }
+
+    .footer__line {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .info__links, .info__socials, .info__developers  {
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .info__socials {
+        padding: 10px 20px;
+    }
+
+    .footer__info img, .info__developers img {
+        width: 15px;
+    }
+}

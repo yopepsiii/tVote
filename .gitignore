@@ -97,7 +97,7 @@ ENV/
 [Ll]ocal
 [Ss]cripts
 pyvenv.cfg
-.venv
+../.venv
 pip-selfcheck.json
 
 ### JetBrains template
@@ -184,3 +184,4 @@ fabric.properties
 
 # dotenv
 /.env
+/frontend/.env

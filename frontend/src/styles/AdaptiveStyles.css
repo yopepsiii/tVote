@@ -1,0 +1,38 @@
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    margin: 180px 150px;
+}
+
+@media screen and (max-width: 1250px) {
+    .right-block {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .welcome-block, .candidates-block, .block {
+        margin: 150px 20px 250px 20px;
+    }
+
+    .left-block__subtitle {
+        font-size: 18px;
+    }
+    .candidates-block {
+        margin: 0;
+        padding: 75px 20px;
+        border-radius: 40px;
+    }
+
+    .member__role {
+        font-size: 12px;
+    }
+
+}
+
+@media screen and (max-width: 700px) {
+    .left-block__title {
+        font-size: 55px;
+    }
+}

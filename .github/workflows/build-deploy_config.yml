@@ -60,12 +60,12 @@ jobs:
           python-version: '3.12'
       - name: Update pip
         run: python -m pip install --upgrade pip
-      - name: install requirements.txt
-        run: pip install -r requirements.txt
+      - name: install backend/requirements.txt
+        run: pip install -r backend/requirements.txt
       - name: Start tests
         run: |
           pip install pytest
-          pytest tests
+          pytest backend/tests
       #  --------------- Билд Docker Image & Залив на Docker Hub ---------------
       - name: Login to Docker Hub
         uses: docker/login-action@v3.1.0
@@ -81,11 +81,11 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
-          context: ./
-          file: ./Dockerfile
+          context: backend
+          file: Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.docker_hub_username }}/tvote:latest
+          tags: ${{ secrets.docker_hub_username }}/tvote-backend:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -110,7 +110,9 @@ jobs:
             git fetch origin
             git checkout prod
             git pull origin prod
-            docker compose -f docker-compose-prod.yml pull
+            cd frontend
+            npm install
+            npm run build
             docker compose -f docker-compose-prod.yml up -d
 
           # .env уже должен лежать на серваке

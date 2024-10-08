@@ -1,0 +1,40 @@
+.myAuthButton, .myAuthButton__active {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+    transition: all 0.5s;
+    border-radius: 10px;
+    padding: 15px 0;
+    border: 1px solid #10ACB1;
+    cursor: pointer;
+}
+.myAuthButton {
+    background: none;
+    color: #10ACB1;
+}
+
+.myAuthButton:hover {
+    color: #3bfaff;
+    border-color: #3bfaff;
+}
+
+.myAuthButton__active {
+    background: #10ACB1;
+    color: #002526;
+}
+
+.myAuthButton__active:hover {
+    background: #3bfaff;
+}
+
+.myAuthButton__hidden {
+    display: none;
+}
+
+@media screen and (max-width: 1000px) {
+    .myAuthButton, .myAuthButton__active {
+        width: 70px;
+        padding: 13px 0;
+        font-size: 14px;
+    }
+}

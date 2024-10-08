@@ -1,0 +1,6 @@
+.faq {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+    margin-top: 400px;
+}
