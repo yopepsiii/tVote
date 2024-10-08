@@ -60,12 +60,12 @@ jobs:
           python-version: '3.12'
       - name: Update pip
         run: python -m pip install --upgrade pip
-      - name: install backend/requirements.txt
-        run: pip install -r backend/requirements.txt
+      - name: install requirements.txt
+        run: pip install -r requirements.txt
       - name: Start tests
         run: |
           pip install pytest
-          pytest backend/tests
+          pytest
       #  --------------- Билд Docker Image & Залив на Docker Hub ---------------
       - name: Login to Docker Hub
         uses: docker/login-action@v3.1.0
