@@ -1,0 +1,9 @@
+.background-gradient {
+    background: linear-gradient(179deg, #004052 0%, #001014 100%);
+}
+
+.background-img {
+    background: url('/public/images/login_bg.png') lightgray 50% / cover no-repeat;
+    height: 100vh;
+
+}

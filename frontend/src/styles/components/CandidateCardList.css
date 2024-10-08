@@ -1,0 +1,6 @@
+.candidateCardList {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 80px;
+}

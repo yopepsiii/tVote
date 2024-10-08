@@ -1,0 +1,61 @@
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    margin: 12vh 0 50px 0;
+    gap: 30px;
+    border-radius: 73px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(129, 129, 129, 0.13);
+    backdrop-filter: blur(15px);
+    padding: 78px 87px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.headInfo__title {
+    margin-bottom: 15px;
+    color: #FFF;
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.headInfo__subtitle {
+    color: #FFF;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.loginForm__inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+@media screen and (max-width: 610px) {
+    .loginForm {
+        border-radius: 53px;
+        padding: 48px 67px;
+    }
+
+    .headInfo__title {
+        font-size: 32px;
+    }
+
+    .headInfo__subtitle {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .loginForm {
+        padding: 48px 27px;
+        margin: 12vh 0 20px 0;
+    }
+
+    .App {
+        overflow-x: hidden;
+    }
+}

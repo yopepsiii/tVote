@@ -1,0 +1,82 @@
+.myVoteButton__like, .myVoteButton__dislike, .myVoteButton__abstain {
+    background: none;
+}
+
+.myVoteButton__like, .myVoteButton__dislike, .myVoteButton__abstain, .myVoteButton__like__pressed, .myVoteButton__dislike__pressed, .myVoteButton__abstain__pressed {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    padding: 15px 0;
+    width: 100%;
+    border-radius: 30px;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.5s;
+    filter: brightness(90%);
+}
+
+.myVoteButton__icon {
+    transition: all 0.5s !important;
+    width: 22px !important;
+    height: 22px;
+}
+
+.myVoteButton__abstain {
+    color: #9C9C9C;
+}
+
+.myVoteButton__abstain:hover, .myVoteButton__like:hover, .myVoteButton__dislike:hover,
+.myVoteButton__abstain__pressed:hover, .myVoteButton__like__pressed:hover, .myVoteButton__dislike__pressed:hover {
+    filter: brightness(120%);
+
+}
+
+.myVoteButton__abstain__pressed {
+    padding: 15px 0;
+    width: 100%;
+    color: #004052;
+    background-color: #9C9C9C;
+    font-weight: 500;
+}
+
+.myVoteButton__abstain, .myVoteButton__abstain__pressed {
+    border-color: #9C9C9C;
+}
+
+.myVoteButton__like {
+    color: #66FF70;
+}
+
+
+.myVoteButton__like__pressed {
+    color: #004052;
+    background-color: #66FF70;
+}
+
+
+.myVoteButton__like, .myVoteButton__like__pressed {
+    border-color: #66FF70;
+}
+
+.myVoteButton__dislike {
+    color: #FF6668;
+}
+
+
+.myVoteButton__dislike__pressed {
+    color: #004052;
+    background-color: #FF6668;
+}
+
+
+.myVoteButton__dislike, .myVoteButton__dislike__pressed {
+    border-color: #FF6668;
+}
+
+@media screen and (max-width: 1000px) {
+    .myVoteButton__like, .myVoteButton__dislike, .myVoteButton__abstain, .myVoteButton__like__pressed, .myVoteButton__dislike__pressed, .myVoteButton__abstain__pressed {
+        padding: 10px 20px;
+    }
+}

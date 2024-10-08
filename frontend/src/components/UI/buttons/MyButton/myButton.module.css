@@ -1,0 +1,25 @@
+.myBtn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    padding: 25px 83px;
+    transition: 0.5s all;
+    border-radius: 40px;
+    background: #10ACB1;
+    border: none;
+    cursor: pointer;
+
+}
+
+.myBtn:hover {
+    background: #13e0e8;
+}
+
+@media screen and (max-width: 700px) {
+    .myBtn {
+        font-size: 15px;
+
+    }
+
+}

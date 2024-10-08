@@ -1,7 +1,7 @@
 services:
   backend:
     container_name: backend
-    image: yopepsi/tvote:latest
+    image: yopepsi/tvote-backend:latest
     env_file:
       - .env
     command: >
@@ -18,6 +18,7 @@ services:
       - ./nginx/prod/data/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/prod/cert/vote-ist-ru.crt:/etc/ssl/ca.crt
       - ./nginx/prod/cert/vote-ist-ru.key:/etc/ssl/ca.key
+      - ./frontend/build/:/usr/src/tVote/frontend/build/
     depends_on:
       - backend
   postgres:

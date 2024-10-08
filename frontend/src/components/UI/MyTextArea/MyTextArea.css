@@ -1,0 +1,20 @@
+.custom-textarea {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    background-color: #0f202a;
+    color: #8fb5be;
+    border: 1px solid #38bec9;
+    border-radius: 10px;
+    font-size: 16px;
+    resize: none;
+}
+
+.custom-textarea::placeholder {
+    color: #48676e;
+}
+
+.custom-textarea:focus {
+    outline: none;
+    border-color: #47d2de;
+}
