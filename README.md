@@ -26,7 +26,7 @@ openssl req -x509 -out localhost.crt -keyout localhost.key \
 ### Установка
 1. Склонируйте репозиторий:
 ```bash
-git clone https://github.com/ваш_пользователь/ваш_репозиторий.git
+git clone https://github.com/yopepsiii/tVote.git .
 ```  
 2. Установите [Docker](https://www.docker.com/products/docker-desktop/)  
 3. Создайте в корневой дирректории .env и заполните в соответствии с файлом `config.py`
